@@ -1,0 +1,4 @@
+decimer==2.5.0
+tqdm
+streamlit
+opencv-python
