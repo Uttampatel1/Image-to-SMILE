@@ -1,3 +1,4 @@
+opencv-python-headless
 decimer==2.5.0
 tqdm
 streamlit
