@@ -12,11 +12,11 @@ def load_model():
 
 # Function to predict SMILES
 def predict_smiles(image_path):
+    load_model()
     SMILES = predict_SMILES(image_path)
     return SMILES
 # Main function for Streamlit app
 def main():
-    load_model()
     st.title("SMILES Prediction from PNG Images")
     st.write("ℹ️ Upload PNG images and let me predict the SMILES notation for each one!")
 
