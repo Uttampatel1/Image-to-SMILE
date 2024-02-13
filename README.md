@@ -10,6 +10,9 @@ This Streamlit web application predicts the Simplified Molecular Input Line Entr
 3. **View Prediction**: The predicted SMILES notation will be displayed below the uploaded image.
 
 ## App link : https://image-to-smile.streamlit.app/
+accuracy
+- Accuracy : 93.%
+- paper link : https://jcheminf.biomedcentral.com/articles/10.1186/s13321-021-00538-8
 
 ## Installation 🛠️
 
