@@ -5,17 +5,18 @@ from io import BytesIO
 import tempfile
 
 
-# Initialize 'key' in session state if not already initialized
-if 'key' not in st.session_state:
-    st.session_state['key'] = 'value'
+
+@st.cache_resource  # 👈 Add the caching decorator
+def load_model():
+    from DECIMER import predict_SMILES  
 
 # Function to predict SMILES
 def predict_smiles(image_path):
-    from DECIMER import predict_SMILES  
     SMILES = predict_SMILES(image_path)
     return SMILES
 # Main function for Streamlit app
 def main():
+    load_model()
     st.title("SMILES Prediction from PNG Images")
     st.write("ℹ️ Upload PNG images and let me predict the SMILES notation for each one!")
 
