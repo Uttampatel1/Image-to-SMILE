@@ -5,14 +5,10 @@ from io import BytesIO
 import tempfile
 
 
-
-@st.cache_resource  # 👈 Add the caching decorator
-def load_model():
-    from DECIMER import predict_SMILES  
-
+@st.cache_resource
 # Function to predict SMILES
 def predict_smiles(image_path):
-    load_model()
+    from DECIMER import predict_SMILES 
     SMILES = predict_SMILES(image_path)
     return SMILES
 # Main function for Streamlit app
