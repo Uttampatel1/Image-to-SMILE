@@ -9,19 +9,20 @@ This Streamlit web application predicts the Simplified Molecular Input Line Entr
 2. **Predict SMILES**: Once the image is uploaded, click on the "Predict SMILES" button to generate the SMILES notation for the uploaded image.
 3. **View Prediction**: The predicted SMILES notation will be displayed below the uploaded image.
 
+## App link : https://image-to-smile.streamlit.app/
 
 ## Installation 🛠️
 
 1. Clone the repository:
 
     ```bash
-    git clone <repository_url>
+    git clone https://github.com/Uttampatel1/Image-to-SMILE.git
     ```
 
 2. Navigate to the project directory:
 
     ```bash
-    cd SMILES-Prediction-App
+    cd Image-to-SMILE
     ```
 
 3. Install the required Python packages:
@@ -41,11 +42,6 @@ streamlit run app.py
 ## About DECIMER 🧪
 
 DECIMER (Drug Extractor and Classifier from Images for Molecules and Molecular InChI Extractor from Repository) is a Python library for extracting molecular structure images from various sources and predicting SMILES notation.
-
-## Credits 🙏
-
-- This app utilizes the DECIMER library for predicting SMILES from chemical structure images.
-- Developed by [Your Name].
 
 ## License 📝
 
