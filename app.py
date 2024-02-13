@@ -1,15 +1,22 @@
 import os
 import streamlit as st
-from DECIMER import predict_SMILES
 from PIL import Image
 from io import BytesIO
 import tempfile
 
+
+# Initialize 'key' in session state if not already initialized
+if 'key' not in st.session_state:
+    st.session_state['key'] = 'value'
+
 # Function to predict SMILES
 def predict_smiles(image_path):
+    if st.session_state['key'] == 'value':
+        from DECIMER import predict_SMILES
+        st.session_state['key'] = 'loaded'
+    
     SMILES = predict_SMILES(image_path)
     return SMILES
-
 # Main function for Streamlit app
 def main():
     st.title("SMILES Prediction from PNG Images")
