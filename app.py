@@ -2,13 +2,16 @@ import os
 import streamlit as st
 from PIL import Image
 import shutil
-from io import BytesIO
 from DECIMER import predict_SMILES 
 
 # Function to predict SMILES
 def predict_smiles(image):
-    SMILES = predict_SMILES(image)
-    return SMILES
+    try:
+        SMILES = predict_SMILES(image)
+        return SMILES
+    except Exception as e:
+        st.error(f"An error occurred while predicting SMILES: {str(e)}")
+        return None
 
 # Main function for Streamlit app
 def main():
@@ -23,23 +26,38 @@ def main():
             os.makedirs(temp_dir)
         for uploaded_file in uploaded_files:
             # Save uploaded file to temporary directory
-            image = Image.open(uploaded_file)
-            image_path = os.path.join(temp_dir, uploaded_file.name)
-            image.save(image_path)
+            try:
+                image = Image.open(uploaded_file)
+                image_path = os.path.join(temp_dir, uploaded_file.name)
+            except Exception as e:
+                st.error(f"An error occurred while processing the image: {str(e)}")
+                continue
+            
+            try:
+                image.save(image_path)
+            except Exception as e:
+                st.error(f"An error occurred while saving the image: {str(e)}")
+                continue
 
-            # Read and display uploaded image
-            st.image(image, caption=f'🖼️ Uploaded Image - {uploaded_file.name}', width=400)
+            if image:
+                # Read and display uploaded image
+                st.image(image, caption=f'🖼️ Uploaded Image - {uploaded_file.name}', width=400)
 
             with st.spinner("⌛ Creating SMILES..."):
                 # Predict SMILES
                 SMILES = predict_smiles(image_path)
+                if SMILES is None:
+                    continue
             
             st.write(f"🔍 Predicted SMILES for {uploaded_file.name}:")
             st.write(SMILES)
             st.write("---")
         
         # Clean up temporary directory
-        shutil.rmtree(temp_dir)
+        try:
+            shutil.rmtree(temp_dir)
+        except Exception as e:
+            st.error(f"An error occurred while cleaning up temporary files: {str(e)}")
 
 if __name__ == "__main__":
     main()
