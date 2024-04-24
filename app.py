@@ -1,63 +1,55 @@
-import os
 import streamlit as st
+from DECIMER import predict_SMILES
 from PIL import Image
-import shutil
-from DECIMER import predict_SMILES 
+import os
+import pandas as pd
 
-# Function to predict SMILES
+
+# Function to predict SMILES from image
+@st.cache_resource
 def predict_smiles(image):
-    try:
-        SMILES = predict_SMILES(image)
-        return SMILES
-    except Exception as e:
-        st.error(f"An error occurred while predicting SMILES: {str(e)}")
-        return None
+    smiles = predict_SMILES(image)
+    return smiles
 
-# Main function for Streamlit app
+# Streamlit app
 def main():
-    st.title("SMILES Prediction from PNG Images")
-    st.write("ℹ️ Upload PNG images and let me predict the SMILES notation for each one!")
+    st.title("Image to SMILES Converter")
 
-    uploaded_files = st.file_uploader("📂 Upload PNG Images", type="png", accept_multiple_files=True)
-    
+    # Upload multiple images
+    uploaded_files = st.file_uploader("Upload Images", type=["png", "jpg"], accept_multiple_files=True)
+
     if uploaded_files:
-        temp_dir = "temp_images"
-        if not os.path.exists(temp_dir):
-            os.makedirs(temp_dir)
+        smiles_data = []
         for uploaded_file in uploaded_files:
-            # Save uploaded file to temporary directory
-            try:
-                image = Image.open(uploaded_file)
-                image_path = os.path.join(temp_dir, uploaded_file.name)
-            except Exception as e:
-                st.error(f"An error occurred while processing the image: {str(e)}")
-                continue
-            
-            try:
-                image.save(image_path)
-            except Exception as e:
-                st.error(f"An error occurred while saving the image: {str(e)}")
-                continue
+            # Save uploaded image
+            image_path = os.path.join("uploaded_images", uploaded_file.name)
+            with open(image_path, "wb") as f:
+                f.write(uploaded_file.getbuffer())
 
-            if image:
-                # Read and display uploaded image
-                st.image(image, caption=f'🖼️ Uploaded Image - {uploaded_file.name}', width=400)
+            # Predict SMILES
+            smiles = predict_smiles(image_path)
 
-            with st.spinner("⌛ Creating SMILES..."):
-                # Predict SMILES
-                SMILES = predict_smiles(image_path)
-                if SMILES is None:
-                    continue
-            
-            st.write(f"🔍 Predicted SMILES for {uploaded_file.name}:")
-            st.write(SMILES)
+            # Save image name and SMILES
+            smiles_data.append({"Image Name": uploaded_file.name, "SMILES": smiles})
+
+            # Display uploaded image
+            st.image(uploaded_file, caption="Uploaded Image", use_column_width=True)
+
+            # Display predicted SMILES
+            st.write("Predicted SMILES:", smiles)
             st.write("---")
-        
-        # Clean up temporary directory
-        try:
-            shutil.rmtree(temp_dir)
-        except Exception as e:
-            st.error(f"An error occurred while cleaning up temporary files: {str(e)}")
+
+        # Create DataFrame from collected data
+        df = pd.DataFrame(smiles_data)
+
+        # Add a download button for CSV file
+        csv = df.to_csv(index=False)
+        st.download_button(
+            label="Download CSV",
+            data=csv,
+            file_name="smiles_predictions.csv",
+            mime="text/csv"
+        )
 
 if __name__ == "__main__":
     main()
